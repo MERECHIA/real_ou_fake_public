@@ -11,11 +11,13 @@ body{
 }
 
 .container{
-    background: white;
+    background: #f9f9f9;
     padding: 30px;
     border-radius: 20px;
     text-align: center;
     box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 90%;
 }
 
 h1{
