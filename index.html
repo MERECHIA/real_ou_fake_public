@@ -1,0 +1,40 @@
+
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="style.css"> 
+    <title>REAL OU FAKE?</title> 
+</head> 
+
+<body> 
+    
+    <div id = "container">
+        
+        <h1>REAL OU FAKE?</h1>
+
+        <div id="imagem"> 
+            <img src="lontra.jpg" alt="Imagem teste"> 
+        </div> 
+        
+        <div id="botoes"> 
+            <button id="real" onclick="verificar('real')">REAL</button> 
+            <button id="fake" onclick="verificar('fake')">FAKE</button> 
+        </div> 
+        
+
+        <div id="resultado"> 
+            <p id="acertou"></p> 
+            <p id="errou"></p>  
+        </div> 
+        
+        <div id="contador"> 
+            <p id="total"></p>
+        </div>
+        
+    </div>    
+    <script src="script.js"></script> 
+</body> 
+</html>
