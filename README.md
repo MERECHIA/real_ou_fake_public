@@ -41,3 +41,8 @@ aproposta é conscientizar os visitantes sobre o avanço das IAs generativas e o
 - 'features/' -> desenvolvimetno de novas funcionalidades
 - 'hotfix/' -> correções rápidas
 
+## Trello
+
+[Clickable Text][Trello]
+
+[Trello]: https://trello.com/invite/b/69c2f70f2e6cf4c547b92ad2/ATTI1332990e78f9f100c40271becde7953cE6BAA88C/real-or-fake
