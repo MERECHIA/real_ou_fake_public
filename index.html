@@ -10,8 +10,17 @@
 </head> 
 
 <body> 
+
+    <div id ="tela-inicial" class="container"> 
+        
+        <h1>REAL OU FAKE?</h1> 
+        <button id="comecar-btn" onclick="comecarJogo()">
+            COMEÇAR
+        </button>
     
-    <div class = "container">
+    </div>
+
+    <div id ="tela-jogo" class="container escondido">
         
         <h1>REAL OU FAKE?</h1>
 
@@ -23,19 +32,22 @@
             <button id="real" onclick="verificar('real')">REAL</button> 
             <button id="fake" onclick="verificar('fake')">FAKE</button> 
         </div> 
-        
+        <p id="result"></p>
 
-        <div id="resultado"> 
-            <p id="result"></p>
-            <p id="end"></p> 
-            <p id="score1"></p>  
-        </div> 
-        
-        <div id="contador"> 
-            <p id="total"></p>
-        </div>
-        
-    </div>    
-    <script src="script.js"></script> 
+        <button id="btn-continuar" onclick="continuar()" style="display:none;">
+            CONTINUAR
+        </button> 
+    
+    </div>
+    
+    <div id ="tela-final" class="container escondido">
+        <h2 id="resultado-final"></h2>
+        <p id="feedback-ia"></p>
+        <button onclick="reiniciarJogo()">REINICIAR</button>
+           
+    </div> 
+
+    <script type="module" src="js/main.js"></script> 
+
 </body> 
 </html>

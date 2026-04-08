@@ -18,6 +18,10 @@ body{
     width: 90%;
 }
 
+.escondido {
+    display: none;
+}
+
 h1{
     margin-bottom: 20px;
     text-align: center;
@@ -45,6 +49,7 @@ button{
     transition: 0.3s;
 }
 
+
 #real{
     background-color: #4CAF50;
     color:white;
@@ -54,6 +59,7 @@ button{
     background-color: #f44336;
     color:white;
 }
+
 
 button:hover{
     transform: scale(1.1);
