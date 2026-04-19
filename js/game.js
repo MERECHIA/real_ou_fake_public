@@ -1,6 +1,7 @@
 import { imagens } from "./data.js";   
 import { mostrarImagem, mostrarFeedback, limparFeedback, mostrarTela} from "./ui.js";
 import { gerarFeedbackIA } from "./ai.js";
+import { iniciarCameraAuto, pararDeteccao } from "./camera.js";
 
 
 //estado do jogo
@@ -14,6 +15,7 @@ export function comecarJogo() {
     score = 0;
     mostrarTela("tela-jogo");
     mostrarImagem(imagemAtual, imagens);
+    document.getElementById("btn-continuar").style.display = "none";
     limparFeedback(); 
 }
 
@@ -49,8 +51,14 @@ function finalizarJogo() {
     mostrarTela("tela-final");
     document.getElementById("resultado-final").textContent = "Você acertou " + score + " /" + imagens.length;
     gerarFeedbackIA(score, imagens.length);
+    setTimeout(() => {
+        reiniciarJogo();
+    }, 5000);
+
 }
 
 export function reiniciarJogo() {
+    pararDeteccao(); // Reset do estado de detecção
     mostrarTela("tela-inicial");
+    iniciarCameraAuto(comecarJogo, reiniciarJogo);
 }

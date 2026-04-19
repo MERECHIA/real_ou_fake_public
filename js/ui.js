@@ -1,6 +1,12 @@
 export function mostrarImagem(imagemAtual, imagens) {
     const img=document.querySelector("#imagem img");
-    img.src = imagens[imagemAtual].src;
+    img.classList.add("fade-out");
+
+    setTimeout(() => {
+        img.src = imagens[imagemAtual].src;
+        img.classList.remove("fade-out");
+    }
+    , 200);
 }
 
 export function mostrarFeedback(texto, cor) {
@@ -15,9 +21,24 @@ export function limparFeedback() {
 }
 
 export function mostrarTela(tela) {
-    document.getElementById("tela-inicial").classList.add("escondido");
-    document.getElementById("tela-jogo").classList.add("escondido");
-    document.getElementById("tela-final").classList.add("escondido");
+    const telas=["tela-inicial", "tela-jogo", "tela-final"];
 
-    document.getElementById(tela).classList.remove("escondido");
+    telas.forEach(id => {
+        const n=document.getElementById(id);
+        if (n) {
+            n.classList.add("escondido");
+            n.classList.remove("ativa");
+        }
+    });
+
+    const ativa=document.getElementById(tela);
+
+    if (ativa) {
+        ativa.classList.remove("escondido");
+
+        setTimeout(() => {
+            ativa.classList.add("ativa");
+        }, 10);
+    }
+
 }

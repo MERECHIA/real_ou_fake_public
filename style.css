@@ -22,6 +22,27 @@ body{
     display: none;
 }
 
+.tela-animada {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.4s ease;
+}
+
+.tela-animada.ativa {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.continuar-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
 h1{
     margin-bottom: 20px;
     text-align: center;
@@ -31,6 +52,8 @@ h1{
     width: 300px;
     border-radius: 15px;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
 
 #botoes{
@@ -66,6 +89,13 @@ button:hover{
     opacity: 0.9;
 }
 
+button:disabled{
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.5;
+}
+
 #resultado{
     margin-top: 20px;
     font-size: 22px;
@@ -76,3 +106,4 @@ button:hover{
     margin-top: 10px;
     font-size: 18px;
 }
+
