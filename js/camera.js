@@ -1,9 +1,24 @@
+/**
+ * camera.js
+ * - Inicia camera e modelo ml5 UMA VEZ
+ * - Loop de deteccao via requestAnimationFrame
+ * - Bounding box no canvas overlay
+ * - Espelha stream para #camera-display (hero da tela inicial)
+ */
 
 import { atualizarStatusCamera, mostrarProgressoInicio, esconderProgressoInicio } from "./ui.js";
 
-// Estado
+// Espelha o mesmo stream para o video visivel na tela inicial
+function _espelharParaDisplay(stream) {
+  const display = document.getElementById("camera-display");
+  if (display && stream) {
+    display.srcObject = stream;
+    display.play().catch(() => {});
+  }
+}
 
-let faceapi        = null;
+// Estado
+let faceapi         = null;
 let modeloCarregado = false;
 let cameraIniciada  = false;
 let loopAtivo       = false;
@@ -20,7 +35,7 @@ let cbLeave = null;
 const DELAY_INICIO   = 2000;
 const DELAY_AUSENCIA = 3000;
 
-// API pública
+// API publica
 
 export async function iniciarCameraAuto(startCallback, leaveCallback = null) {
   cbStart = startCallback;
@@ -36,7 +51,6 @@ export async function iniciarCameraAuto(startCallback, leaveCallback = null) {
   atualizarStatusCamera(false, "Aguardando...");
 
   if (cameraIniciada) {
-    
     loopAtivo = true;
     _loopDeteccao(document.getElementById("camera"));
     return;
@@ -49,7 +63,6 @@ export function marcarJogoIniciado() {
   jogoEmAndamento    = true;
   aguardandoReinicio = false;
 }
-
 
 export function pausarDeteccao() {
   loopAtivo          = false;
@@ -81,10 +94,13 @@ export function encerrarCamera() {
     video.srcObject.getTracks().forEach(t => t.stop());
     video.srcObject = null;
   }
-  loopAtivo       = false;
-  cameraIniciada  = false;
-  modeloCarregado = false;
-  faceapi         = null;
+  const display = document.getElementById("camera-display");
+  if (display) display.srcObject = null;
+
+  loopAtivo          = false;
+  cameraIniciada     = false;
+  modeloCarregado    = false;
+  faceapi            = null;
   jogoEmAndamento    = false;
   aguardandoReinicio = false;
   prontoParaStart    = false;
@@ -93,7 +109,7 @@ export function encerrarCamera() {
   _limparCanvas();
 }
 
-// Inicialização
+// Inicializacao
 
 async function _iniciarCamera() {
   const video = document.getElementById("camera");
@@ -102,7 +118,11 @@ async function _iniciarCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
     });
+
     video.srcObject = stream;
+
+  
+    _espelharParaDisplay(stream);
 
     await new Promise(resolve => {
       video.onloadedmetadata = () => { video.play(); resolve(); };
@@ -114,8 +134,8 @@ async function _iniciarCamera() {
     _iniciarModelo(video);
 
   } catch (err) {
-    console.error("[camera] Erro ao acessar câmera:", err);
-    atualizarStatusCamera(false, "Câmera indisponível");
+    console.error("[camera] Erro ao acessar camera:", err);
+    atualizarStatusCamera(false, "Camera indisponivel");
     _ativarModoManual();
   }
 }
@@ -127,23 +147,23 @@ function _iniciarModelo(video) {
     withTinyNet:     true,
     minConfidence:   0.5,
     MODEL_URLS: {
-        TinyFaceDetectorModel: "assets/models/tiny_face_detector_model-shard1",
-        FaceLandmark68TinyNet: "assets/models/face_landmark_68_tiny_model-shard1",
-        FaceRecognitionModel:  "assets/models/face_recognition_model-shard1"
+      TinyFaceDetectorModel: "assets/models/tiny_face_detector_model-shard1",
+      FaceLandmark68TinyNet: "assets/models/face_landmark_68_tiny_model-shard1",
+      FaceRecognitionModel:  "assets/models/face_recognition_model-shard1"
     }
   };
 
   faceapi = ml5.faceApi(video, options, () => {
     console.log("[camera] Modelo carregado.");
-    modeloCarregado = true;
-    video.width  = video.videoWidth;
-    video.height = video.videoHeight;
-    loopAtivo = true;
+    modeloCarregado  = true;
+    video.width      = video.videoWidth;
+    video.height     = video.videoHeight;
+    loopAtivo        = true;
     _loopDeteccao(video);
   });
 }
 
-// Loop de detecção
+// Loop de deteccao
 
 function _loopDeteccao(video) {
   if (!loopAtivo || !faceapi || !modeloCarregado) return;
@@ -167,7 +187,6 @@ function _loopDeteccao(video) {
     if (jogoEmAndamento) {
       _logicaEmJogo(rostoOlhando, temRosto);
     } else {
-
       _logicaEspera(rostoOlhando, temRosto);
     }
 
@@ -175,7 +194,7 @@ function _loopDeteccao(video) {
   });
 }
 
-// Lógica de estados
+// Logica de estados
 
 function _logicaEspera(rostoOlhando, temRosto) {
   if (rostoOlhando) {
@@ -196,7 +215,7 @@ function _logicaEspera(rostoOlhando, temRosto) {
       esconderProgressoInicio();
     }
     atualizarStatusCamera(false,
-      temRosto ? "Olhe para a tela" : "Aproxime-se para começar"
+      temRosto ? "Olhe para a tela" : "Aproxime-se para comecar"
     );
   }
 }
@@ -206,7 +225,7 @@ function _logicaEmJogo(rostoOlhando, temRosto) {
     if (ausenciaInicio === null) {
       ausenciaInicio = performance.now();
     } else if (performance.now() - ausenciaInicio > DELAY_AUSENCIA) {
-      loopAtivo      = false;
+      loopAtivo       = false;
       jogoEmAndamento = false;
       ausenciaInicio  = null;
       _limparInicioTimeout();
@@ -219,7 +238,7 @@ function _logicaEmJogo(rostoOlhando, temRosto) {
   }
 }
 
-// Análise de rosto
+// Analise do rosto
 
 function _estaOlhandoParaTela(result) {
   if (!result || !result.landmarks) return false;
@@ -236,7 +255,7 @@ function _estaOlhandoParaTela(result) {
   return angulo < 30;
 }
 
-// Canvas
+// Canvas / bounding box
 
 function _desenharCanvas(video, results) {
   const canvas = document.getElementById("camera-canvas");
@@ -259,45 +278,56 @@ function _desenharCanvas(video, results) {
   const y = box._y * scaleY;
   const w = box._width  * scaleX;
   const h = box._height * scaleY;
-
-  const cor = jogoEmAndamento ? "#2ecc71" : (prontoParaStart ? "#f39c12" : "#ffffff");
   const tam = 10;
 
+  const cor = jogoEmAndamento ? "#2ecc71" : (prontoParaStart ? "#f39c12" : "#ffffff");
   ctx.strokeStyle = cor;
   ctx.lineWidth   = 1.5;
   ctx.shadowColor = cor;
   ctx.shadowBlur  = 6;
 
-  ctx.beginPath(); ctx.moveTo(x, y + tam);       ctx.lineTo(x, y);       ctx.lineTo(x + tam, y);       ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x + w - tam, y);   ctx.lineTo(x + w, y);   ctx.lineTo(x + w, y + tam);   ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x, y + h - tam);   ctx.lineTo(x, y + h);   ctx.lineTo(x + tam, y + h);   ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(x + w - tam, y+h); ctx.lineTo(x + w, y+h); ctx.lineTo(x + w, y + h-tam); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x,y+tam);     ctx.lineTo(x,y);     ctx.lineTo(x+tam,y);     ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x+w-tam,y);   ctx.lineTo(x+w,y);   ctx.lineTo(x+w,y+tam);   ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x,y+h-tam);   ctx.lineTo(x,y+h);   ctx.lineTo(x+tam,y+h);   ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x+w-tam,y+h); ctx.lineTo(x+w,y+h); ctx.lineTo(x+w,y+h-tam); ctx.stroke();
+
+
+  const overlay = document.getElementById("camera-overlay");
+  if (overlay) {
+    overlay.width  = canvas.width;
+    overlay.height = canvas.height;
+    const octx = overlay.getContext("2d");
+    octx.clearRect(0, 0, overlay.width, overlay.height);
+    octx.drawImage(canvas, 0, 0);
+  }
 }
 
 function _limparCanvas() {
-  const canvas = document.getElementById("camera-canvas");
-  if (!canvas) return;
-  canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  ["camera-canvas", "camera-overlay"].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) c.getContext("2d").clearRect(0, 0, c.width, c.height);
+  });
 }
 
 // Fallback manual
 
 function _ativarModoManual() {
   console.warn("[camera] Modo manual ativo.");
-  const wrapper = document.getElementById("camera-wrapper");
-  if (wrapper) wrapper.style.display = "none";
-
-  const label = document.getElementById("status-camera-label");
-  if (label) {
-    label.textContent = "Toque para começar";
-    label.style.cursor = "pointer";
-    label.addEventListener("click", () => {
-      if (cbStart) cbStart();
-    }, { once: true });
+  const camHero = document.querySelector(".cam-hero");
+  if (camHero) {
+    camHero.style.background = "#1a1a1a";
+    const lbl = document.getElementById("cam-bottom-label");
+    if (lbl) {
+      lbl.textContent = "Toque para comecar";
+      lbl.style.cursor = "pointer";
+      lbl.addEventListener("click", () => {
+        if (cbStart) cbStart();
+      }, { once: true });
+    }
   }
 }
 
-// Utilitários
+// Utilitarios
 
 function _limparInicioTimeout() {
   if (inicioTimeout) { clearTimeout(inicioTimeout); inicioTimeout = null; }

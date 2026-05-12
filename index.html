@@ -13,16 +13,11 @@
 </head>
 <body>
 
+  <!-- Vídeo e canvas — ocultos, usados pelo camera.js para detecção -->
+  <video id="camera" autoplay muted playsinline style="display:none;"></video>
+  <canvas id="camera-canvas" style="display:none;"></canvas>
 
-  <div id="camera-wrapper">
-    <video id="camera" autoplay muted playsinline></video>
-    <canvas id="camera-canvas"></canvas>
-    <div id="camera-status-bar">
-      <span id="status-camera">Aproxime-se para começar</span>
-    </div>
-  </div>
-
-  
+  <!-- ===================== TELA INICIAL ===================== -->
   <div id="tela-inicial" class="tela ativa">
 
     <div class="hdr">
@@ -31,20 +26,28 @@
         <span class="hdr-sep">ou</span>
         <span class="hdr-fake">FAKE</span>
       </div>
-      <div class="hdr-right">
-        <div class="live-dot" id="live-dot"></div>
-        <span id="live-txt">Câmera</span>
-      </div>
+      <span class="hdr-tag" id="live-txt">Câmera</span>
     </div>
 
-    <div class="inicial-hero">
-      <div class="hero-num" aria-hidden="true">?</div>
+    <div class="color-bar"></div>
+
+    <!-- CÂMERA CENTRALIZADA COMO HERO -->
+    <div class="cam-hero">
+      <video id="camera-display" autoplay muted playsinline></video>
+      <canvas id="camera-overlay"></canvas>
+      <div class="cam-scanline"></div>
+      <div class="cam-top-bar" id="cam-top-bar"></div>
+      <div class="cam-bottom-label" id="cam-bottom-label">Aguardando pessoa</div>
+    </div>
+
+    <div class="inicial-body">
+      <div class="ghost-q" aria-hidden="true">?</div>
       <div class="hero-titulo">
         <span class="hero-real">REAL</span>
         <span class="hero-ou">ou</span>
         <span class="hero-fake">FAKE?</span>
       </div>
-      <p class="hero-sub">Você consegue distinguir uma fotografia real de uma imagem criada por inteligência artificial?</p>
+      <p class="hero-sub">Você consegue distinguir uma foto real de uma imagem criada por inteligência artificial?</p>
     </div>
 
     <div class="inicial-footer">
@@ -56,7 +59,7 @@
 
   </div>
 
-  
+  <!-- ===================== TELA JOGO ===================== -->
   <div id="tela-jogo" class="tela escondida">
 
     <div class="hdr">
@@ -65,18 +68,30 @@
         <span class="hdr-sep">ou</span>
         <span class="hdr-fake">FAKE</span>
       </div>
-      <div class="hdr-right" style="flex-direction:column; align-items:flex-end; gap:4px;">
-        <span id="img-contador" class="num-img">Imagem 1 / 5</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span id="img-contador" class="hdr-tag">Imagem 1 / 5</span>
         <div id="score-track" class="score-dots"></div>
       </div>
     </div>
 
+    <div class="color-bar"></div>
+
     <div class="img-area">
       <img id="imagem-principal" src="" alt="Imagem para classificar">
       <div class="scan-line"></div>
+
+      <!-- Overlay de feedback — cobre a imagem quando responde -->
       <div id="feedback-overlay" class="fov">
-        <span class="fov-icone" id="fov-icone"></span>
-        <span class="fov-word"  id="fov-word"></span>
+        <!-- Zona superior: ícone + palavra -->
+        <div class="fov-top">
+          <span class="fov-icone" id="fov-icone"></span>
+          <span class="fov-word"  id="fov-word"></span>
+        </div>
+        <!-- Zona inferior: dica da IA (só quando erra) -->
+        <div class="fov-dica" id="fov-dica">
+          <span class="fov-dica-label">IA</span>
+          <span class="fov-dica-txt" id="fov-dica-txt">Analisando imagem...</span>
+        </div>
       </div>
     </div>
 
@@ -86,17 +101,13 @@
     </div>
 
     <div class="jogo-footer">
-      <div class="footer-esquerda">
-        <span id="result" class="res-txt"></span>
-        <!-- Dica exibida apenas quando a resposta é errada -->
-        <span id="dica-imagem" class="dica-txt"></span>
-      </div>
+      <span id="result" class="res-txt"></span>
       <button id="btn-continuar" class="btn-cont">Continuar →</button>
     </div>
 
   </div>
 
-  
+  <!-- ===================== TELA FINAL ===================== -->
   <div id="tela-final" class="tela escondida">
 
     <div class="hdr">
@@ -105,10 +116,10 @@
         <span class="hdr-sep">ou</span>
         <span class="hdr-fake">FAKE</span>
       </div>
-      <div class="hdr-right">
-        <span class="num-img">Resultado</span>
-      </div>
+      <span class="hdr-tag">Resultado</span>
     </div>
+
+    <div class="color-bar"></div>
 
     <div class="final-hero">
       <div class="final-ghost" id="final-ghost" aria-hidden="true">0</div>
