@@ -1,6 +1,7 @@
 /**
  * ai.js
- * - Analisa imagem via Google Gemini (contexto textual, sem base64)
+ * - Analisa imagem via Google Gemini
+ * - Timeout via Promise.race com delay
  * - Guard contra chamadas simultaneas
  * - Fallback offline usa dica do data.js
  */
@@ -8,16 +9,17 @@
 import { atualizarDicaIA } from "./ui.js";
 
 
-const GEMINI_API_KEY = "MINHA_CHAVE";
+const GEMINI_API_KEY = "Minha_Chave";
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
 
-const TIMEOUT_MS = 8000;
+// Timeout generoso — Gemini pode demorar na primeira chamada
+const TIMEOUT_MS = 15000;
 
-// Guard: impede chamadas simultaneas a API
+// Guard: impede chamadas simultaneas
 let analisandoAgora = false;
 
-// Contexto especifico por imagem 
+// Contexto especifico por imagem
 const CONTEXTO_IMAGENS = {
   "lontra.jpg":     "lontra real fotografada em habitat natural, pelo molhado com imperfeicoes",
   "Urso.jpg":       "urso real fotografado na natureza, pelo com variacao e sombras naturais",
@@ -38,15 +40,13 @@ const CONTEXTO_IMAGENS = {
 // Analisa e atualiza dica no overlay quando pessoa erra
 
 export async function analisarImagemErro(imagemSrc, tipoCorreto, dicaLocal) {
-  // Guard: se ja tem uma chamada em andamento, usa fallback
   if (analisandoAgora) {
     console.warn("[ai] Chamada ja em andamento, usando fallback.");
     atualizarDicaIA(dicaLocal);
     return;
   }
 
-  // Sem chave configurada — fallback direto
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === "MINHA_CHAVE") {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "Minha_Chave") {
     atualizarDicaIA(dicaLocal);
     return;
   }
@@ -66,24 +66,15 @@ export async function analisarImagemErro(imagemSrc, tipoCorreto, dicaLocal) {
       generationConfig: { temperature: 0.4, maxOutputTokens: 60 }
     };
 
-    const resposta = await _fetchComTimeout(GEMINI_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    }, TIMEOUT_MS);
+    const texto = await Promise.race([
+      _chamarGemini(body),
+      _timeoutPromise(TIMEOUT_MS, dicaLocal)
+    ]);
 
-    const dados = await resposta.json();
-    console.log("[ai] Resposta Gemini:", dados);
-
-    if (dados.error) {
-      throw new Error(`Gemini ${dados.error.code}: ${dados.error.message}`);
-    }
-
-    const texto = dados?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    atualizarDicaIA(texto || dicaLocal);
+    atualizarDicaIA(texto);
 
   } catch (err) {
-    console.warn("[ai] Falhou, usando fallback:", err.message);
+    console.warn("[ai] Erro na analise:", err.message);
     atualizarDicaIA(dicaLocal);
   } finally {
     analisandoAgora = false;
@@ -96,7 +87,7 @@ export async function gerarFeedbackIA(score, total) {
   const feedbackEl = document.getElementById("feedback-ia");
   if (!feedbackEl) return;
 
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === "MINHA_CHAVE") {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "Minha_Chave") {
     feedbackEl.textContent = _feedbackLocal(score, total);
     return;
   }
@@ -114,20 +105,12 @@ export async function gerarFeedbackIA(score, total) {
       generationConfig: { temperature: 0.7, maxOutputTokens: 50 }
     };
 
-    const resposta = await _fetchComTimeout(GEMINI_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    }, TIMEOUT_MS);
+    const texto = await Promise.race([
+      _chamarGemini(body),
+      _timeoutPromise(TIMEOUT_MS, _feedbackLocal(score, total))
+    ]);
 
-    const dados = await resposta.json();
-
-    if (dados.error) {
-      throw new Error(`Gemini ${dados.error.code}: ${dados.error.message}`);
-    }
-
-    const texto = dados?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-    feedbackEl.textContent = texto || _feedbackLocal(score, total);
+    feedbackEl.textContent = texto;
 
   } catch (err) {
     console.warn("[ai] Feedback final offline:", err.message);
@@ -137,17 +120,39 @@ export async function gerarFeedbackIA(score, total) {
 
 // Utilitarios
 
-function _fetchComTimeout(url, options, ms) {
-  const controller = new AbortController();
-  const timer      = setTimeout(() => controller.abort(), ms);
-  return fetch(url, { ...options, signal: controller.signal })
-    .finally(() => clearTimeout(timer));
+async function _chamarGemini(body) {
+  const resposta = await fetch(GEMINI_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+
+  const dados = await resposta.json();
+  console.log("[ai] Resposta Gemini:", dados);
+
+  if (dados.error) {
+    throw new Error(`Gemini ${dados.error.code}: ${dados.error.message}`);
+  }
+
+  const texto = dados?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!texto) throw new Error("Resposta vazia");
+  return texto;
+}
+
+// Retorna o fallback apos o timeout — sem rejeitar a Promise
+function _timeoutPromise(ms, fallback) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      console.warn(`[ai] Timeout de ${ms}ms, usando fallback.`);
+      resolve(fallback);
+    }, ms);
+  });
 }
 
 function _feedbackLocal(score, total) {
   const pct = score / total;
-  if (pct === 1)  return "Incrível! Você identificou todas as imagens corretamente.";
+  if (pct === 1)  return "Incrivel! Você identificou todas as imagens corretamente.";
   if (pct >= 0.6) return "Bom olho! Você está aprendendo a detectar criações de IA.";
   if (pct >= 0.4) return "Quase lá! As IAs modernas são cada vez mais convincentes.";
-  return "A IA te enganou dessa vez. Preste atenção nas texturas e iluminacao!";
+  return "A IA te enganou dessa vez. Preste atenção nas texturas e iluminação!"
 }

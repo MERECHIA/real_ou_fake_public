@@ -155,5 +155,5 @@ function _finalizarJogo() {
 
   setTimeout(() => {
     aguardarReinicioAutomatico(reiniciarJogo);
-  }, 5000);
+  }, 6000);
 }
