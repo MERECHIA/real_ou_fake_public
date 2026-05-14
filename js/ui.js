@@ -1,8 +1,8 @@
 /**
- * ui.js — manipulação de DOM pura
+ * ui.js - manipulacao de DOM pura
  */
 
-// Imagem 
+// Imagem
 
 export function mostrarImagem(index, imagens) {
   const img = document.getElementById("imagem-principal");
@@ -14,13 +14,14 @@ export function mostrarImagem(index, imagens) {
     img.src    = imagens[index].src;
     img.onload  = () => img.classList.remove("fade-out");
     img.onerror = () => {
-      console.error(`[ui] Imagem não encontrada: ${imagens[index].src}`);
-      img.alt = "Imagem indisponível";
+      console.error(`[ui] Imagem nao encontrada: ${imagens[index].src}`);
+      img.alt = "Imagem indisponivel";
       img.classList.remove("fade-out");
     };
   }, 250);
 
   _limparOverlay();
+  _limparDicaRodape();
   _atualizarContador(index, imagens.length);
 }
 
@@ -29,93 +30,88 @@ function _atualizarContador(index, total) {
   if (el) el.textContent = `Imagem ${index + 1} / ${total}`;
 }
 
-// Feedback 
+// Feedback
 
 /**
- * Exibe o overlay de feedback sobre a imagem.
- * Quando errado, a zona de dica fica pronta para receber o texto da IA.
- *
- * @param {string} texto  - "Correto!" | "Errado!"
- * @param {string} tipo   - "correto" | "errado"
- * @param {string} tipoCorreto - "real" | "fake"
+ * @param {string} texto       - "Correto!" | "Errado!"
+ * @param {string} tipo        - "correto" | "errado"
+ * @param {string} tipoCorreto - "real" | "fake" (resposta certa da imagem)
  */
 export function mostrarFeedback(texto, tipo, tipoCorreto = null) {
   const result  = document.getElementById("result");
   const overlay = document.getElementById("feedback-overlay");
   const icone   = document.getElementById("fov-icone");
   const word    = document.getElementById("fov-word");
-  const dica    = document.getElementById("fov-dica");
-  const dicaTxt = document.getElementById("fov-dica-txt");
-  const label = tipoCorreto === "real" ? "Real" : "Fake";
-  
+  const dicaFov = document.getElementById("fov-dica");
 
+  // Resultado no rodape — maior e estilizado
   if (result) {
-    result.textContent = texto;
-    result.style.color = tipo === "correto"
-      ? "var(--verde-escuro)"
-      : "var(--vermelho-esc)";
+    result.textContent = tipo === "correto" ? "CORRETO!" : "ERRADO!";
+    result.className   = `res-txt ${tipo}`;
   }
 
+  // Overlay sobre a imagem — so icone e palavra, sem dica
   if (overlay && icone && word) {
     overlay.className = "fov";
-    overlay.offsetWidth; 
+    overlay.offsetWidth;
     overlay.classList.add("show", tipo === "correto" ? "correto" : "errado");
-    icone.textContent = tipo === "correto" ? "✓" : "✕";
-    word.textContent = tipo === "correto" ? "Correto" : `Errado — era ${label}`;
+    icone.textContent = tipo === "correto" ? "V" : "X";
+
+    const label = tipoCorreto === "real" ? "Real" : tipoCorreto === "fake" ? "Fake" : "";
+    word.textContent  = tipo === "correto" ? "Correto" : `Era ${label}`;
   }
 
-  // Dica: só prepara zona quando erra — conteúdo vem depois via atualizarDicaIA
-  if (dica && dicaTxt) {
-    if (tipo === "errado") {
-      dicaTxt.textContent = "Analisando imagem...";
-      dicaTxt.classList.add("loading");
-      // Desliza de baixo após o overlay aparecer
-      setTimeout(() => dica.classList.add("show"), 150);
-    } else {
-      dica.classList.remove("show");
-      dicaTxt.textContent = "";
+  // Esconde a zona de dica do overlay — nao usada mais
+  if (dicaFov) dicaFov.classList.remove("show");
+
+  // Se errou: prepara dica no rodape com "Analisando..."
+  if (tipo === "errado") {
+    const rodape    = document.getElementById("dica-rodape");
+    const rodapeTxt = document.getElementById("dica-rodape-txt");
+    if (rodape && rodapeTxt) {
+      rodapeTxt.textContent = "Analisando imagem...";
+      rodapeTxt.classList.add("loading");
+      rodape.classList.add("vis");
     }
   }
 }
 
 /**
- * Atualiza o texto da dica com a resposta da IA.
- * Chamado quando a API retorna (ou timeout/fallback).
- *
- * @param {string} texto - explicação gerada pela IA
+ * Atualiza o texto da dica no rodape com a resposta da IA.
  */
 export function atualizarDicaIA(texto) {
-  const dicaTxt = document.getElementById("fov-dica-txt");
-  if (!dicaTxt) return;
-
-  dicaTxt.classList.remove("loading");
-  dicaTxt.textContent = texto;
+  const rodapeTxt = document.getElementById("dica-rodape-txt");
+  if (!rodapeTxt) return;
+  rodapeTxt.classList.remove("loading");
+  rodapeTxt.textContent = texto;
 }
 
 export function limparFeedback() {
   const result = document.getElementById("result");
-  if (result) { result.textContent = ""; result.style.color = ""; }
+  if (result) { result.textContent = ""; result.className = "res-txt"; }
   _limparOverlay();
+  _limparDicaRodape();
 }
 
 function _limparOverlay() {
   const overlay = document.getElementById("feedback-overlay");
   const icone   = document.getElementById("fov-icone");
   const word    = document.getElementById("fov-word");
-  const dica    = document.getElementById("fov-dica");
-  const dicaTxt = document.getElementById("fov-dica-txt");
-
+  const dicaFov = document.getElementById("fov-dica");
   if (overlay) overlay.className = "fov";
   if (icone)   icone.textContent  = "";
   if (word)    word.textContent   = "";
-  if (dica)    dica.classList.remove("show");
-  if (dicaTxt) { dicaTxt.textContent = ""; dicaTxt.classList.remove("loading"); }
+  if (dicaFov) dicaFov.classList.remove("show");
 }
 
-function _labelTipo(tipo) {
-  return tipo === "errado" ? "" : (tipo === "real" ? "Real" : "Fake");
+function _limparDicaRodape() {
+  const rodape    = document.getElementById("dica-rodape");
+  const rodapeTxt = document.getElementById("dica-rodape-txt");
+  if (rodape)    rodape.classList.remove("vis");
+  if (rodapeTxt) { rodapeTxt.textContent = ""; rodapeTxt.classList.remove("loading"); }
 }
-// Troca de telas 
+
+// Troca de telas
 
 export function mostrarTela(telaId) {
   ["tela-inicial", "tela-jogo", "tela-final"].forEach(id => {
@@ -127,21 +123,19 @@ export function mostrarTela(telaId) {
 
   const alvo = document.getElementById(telaId);
   if (!alvo) return;
-
   alvo.classList.remove("escondida");
   requestAnimationFrame(() => {
     requestAnimationFrame(() => alvo.classList.add("ativa"));
   });
 }
 
-// Score track 
+// Score track
 
 export function atualizarScoreTrack(historico, total) {
   const track = document.getElementById("score-track");
   if (!track) return;
 
   track.innerHTML = "";
-
   for (let i = 0; i < total; i++) {
     const dot = document.createElement("div");
     dot.className = "score-dot";
@@ -154,7 +148,7 @@ export function atualizarScoreTrack(historico, total) {
   }
 }
 
-// Tela final 
+// Tela final
 
 export function mostrarResultadoFinal(score, total, historico) {
   const scoreEl = document.getElementById("resultado-final");
@@ -169,7 +163,7 @@ export function mostrarResultadoFinal(score, total, historico) {
     historico.forEach(acertou => {
       const item = document.createElement("div");
       item.className = `b-item ${acertou ? "ok" : "er"}`;
-      item.textContent = acertou ? "✓" : "✕";
+      item.textContent = acertou ? "V" : "X";
       barraEl.appendChild(item);
     });
   }
@@ -182,25 +176,18 @@ export function mostrarResultadoFinal(score, total, historico) {
   }
 }
 
-// Câmera hero (tela inicial) 
+// Camera hero
 
 export function atualizarStatusCamera(detectado, texto) {
-  const label    = document.getElementById("status-camera-label");
-  const topBar   = document.getElementById("cam-top-bar");
+  const label     = document.getElementById("status-camera-label");
+  const topBar    = document.getElementById("cam-top-bar");
   const bottomLbl = document.getElementById("cam-bottom-label");
-  const liveTxt  = document.getElementById("live-txt");
+  const liveTxt   = document.getElementById("live-txt");
 
-  if (label) {
-    label.textContent = texto;
-    label.classList.toggle("on", detectado);
-  }
-
+  if (label)     { label.textContent = texto; label.classList.toggle("on", detectado); }
   if (topBar)    topBar.classList.toggle("on", detectado);
-  if (bottomLbl) {
-    bottomLbl.textContent = texto;
-    bottomLbl.classList.toggle("on", detectado);
-  }
-  if (liveTxt) liveTxt.textContent = detectado ? "Ao vivo" : "Câmera";
+  if (bottomLbl) { bottomLbl.textContent = texto; bottomLbl.classList.toggle("on", detectado); }
+  if (liveTxt)   liveTxt.textContent = detectado ? "Ao vivo" : "Camera";
 }
 
 export function mostrarProgressoInicio(duracao) {

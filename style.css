@@ -17,6 +17,10 @@
   --cinza-fundo:  #fafafa;
   --branco:       #ffffff;
   --transition:   0.2s ease;
+
+  /* Altura fixa igual para todas as telas — baseada na tela inicial */
+  --card-width:   420px;
+  --card-height:  640px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,27 +38,25 @@ html, body {
 
 /* =============================================
    SISTEMA DE TELAS
+   Todas com largura e altura iguais
    ============================================= */
 
 .tela {
   position: absolute;
-  inset: 0;
+  width: var(--card-width);
+  height: var(--card-height);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
   transition: opacity var(--transition), transform var(--transition);
+  overflow: hidden;
+  background: var(--branco);
 }
 
 .tela.ativa    { opacity: 1; transform: translateY(0); pointer-events: all; }
 .tela.escondida { opacity: 0; pointer-events: none; transform: translateY(8px); }
-
-#tela-inicial > *,
-#tela-jogo    > *,
-#tela-final   > * { width: 90%; max-width: 420px; }
 
 /* =============================================
    HEADER UNIVERSAL
@@ -66,6 +68,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .hdr-logo { display: flex; align-items: center; }
@@ -94,128 +97,98 @@ html, body {
   color: #555;
 }
 
-/* Barra decorativa verde | vermelho */
 .color-bar {
   height: 3px;
   background: linear-gradient(90deg, var(--verde) 50%, var(--vermelho) 50%);
+  flex-shrink: 0;
 }
 
 /* =============================================
-   TELA INICIAL — CÂMERA HERO
+   TELA INICIAL
    ============================================= */
 
 .cam-hero {
   position: relative;
+  flex: 1;                  /* ocupa o espaço restante após header e footer */
   background: #111;
-  aspect-ratio: 16/9;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 0;
 }
 
-/* Vídeo espelhado ocupa toda a área hero */
 #camera-display {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  transform: scaleX(-1);
-  display: block;
+  transform: scaleX(-1); display: block;
 }
 
-/* Canvas para bounding box sobre o vídeo */
 #camera-overlay {
-  position: absolute;
-  inset: 0;
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
-  transform: scaleX(-1);
-  pointer-events: none;
+  transform: scaleX(-1); pointer-events: none;
 }
 
-/* Scanline da câmera */
 .cam-scanline {
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
+  position: absolute; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, rgba(46,204,113,0.5), transparent);
   animation: cam-scan 3s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 2;
+  pointer-events: none; z-index: 2;
 }
 
 @keyframes cam-scan {
-  0%   { top: 0%;   opacity: 1; }
-  48%  { top: 100%; opacity: 1; }
-  49%  { opacity: 0; }
-  50%  { top: 0%;   opacity: 0; }
-  51%  { opacity: 1; }
-  100% { top: 100%; opacity: 1; }
+  0%  { top: 0%;   opacity: 1; }
+  48% { top: 100%; opacity: 1; }
+  49% { opacity: 0; } 50% { top: 0%; opacity: 0; } 51% { opacity: 1; }
+  100%{ top: 100%; opacity: 1; }
 }
 
-/* Faixa verde no topo da câmera quando detecta */
 .cam-top-bar {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: var(--verde);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-  z-index: 3;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease; z-index: 3;
 }
 
 .cam-top-bar.on { transform: scaleX(1); }
 
-/* Label na base da câmera */
 .cam-bottom-label {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(0,0,0,0.65);
-  padding: 5px 12px;
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.65); padding: 5px 12px;
   font-size: 9px; font-weight: 600;
   letter-spacing: 0.14em; text-transform: uppercase;
   color: rgba(255,255,255,0.45);
-  text-align: center;
-  z-index: 3;
-  transition: color 0.3s;
+  text-align: center; z-index: 3; transition: color 0.3s;
 }
 
 .cam-bottom-label.on { color: var(--verde); }
 
-/* Corpo abaixo da câmera */
 .inicial-body {
   background: var(--branco);
-  padding: 28px 28px 20px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  border-left: 1.5px solid var(--cinza-borda);
-  border-right: 1.5px solid var(--cinza-borda);
+  padding: 20px 28px 16px;
+  text-align: center; position: relative; overflow: hidden;
+  flex-shrink: 0;
+  border-top: 1.5px solid var(--cinza-borda);
 }
 
 .ghost-q {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 130px; line-height: 1;
-  color: #f2f2f2;
-  position: absolute;
-  top: -10px; left: 50%;
+  font-size: 110px; line-height: 1; color: #f2f2f2;
+  position: absolute; top: -8px; left: 50%;
   transform: translateX(-50%);
-  pointer-events: none; user-select: none;
-  letter-spacing: -2px;
+  pointer-events: none; user-select: none; letter-spacing: -2px;
   animation: ghost-float 4s ease-in-out infinite;
 }
 
 @keyframes ghost-float {
   0%,100% { transform: translateX(-50%) translateY(0); }
-  50%      { transform: translateX(-50%) translateY(-6px); }
+  50%      { transform: translateX(-50%) translateY(-5px); }
 }
 
-.hero-titulo { position: relative; z-index: 1; margin-bottom: 10px; }
+.hero-titulo { position: relative; z-index: 1; margin-bottom: 8px; }
 
 .hero-real {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 68px; letter-spacing: 3px;
+  font-size: 60px; letter-spacing: 3px;
   color: var(--verde); line-height: 0.9; display: block;
   animation: glow-g 3s ease-in-out infinite;
 }
@@ -228,12 +201,12 @@ html, body {
 .hero-ou {
   font-size: 10px; font-weight: 400;
   letter-spacing: 0.3em; text-transform: uppercase;
-  color: #ccc; display: block; margin: 8px 0;
+  color: #ccc; display: block; margin: 6px 0;
 }
 
 .hero-fake {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 68px; letter-spacing: 3px;
+  font-size: 60px; letter-spacing: 3px;
   color: var(--vermelho); line-height: 0.9; display: block;
   animation: glow-r 3s ease-in-out infinite;
 }
@@ -244,19 +217,16 @@ html, body {
 }
 
 .hero-sub {
-  font-size: 11px; font-weight: 400;
-  color: #bbb; line-height: 1.7;
-  max-width: 210px; margin: 0 auto;
-  position: relative; z-index: 1;
+  font-size: 11px; font-weight: 400; color: #bbb; line-height: 1.6;
+  max-width: 240px; margin: 0 auto; position: relative; z-index: 1;
 }
 
-/* Rodapé da tela inicial */
 .inicial-footer {
   background: var(--cinza-fundo);
-  border: 1.5px solid var(--cinza-borda);
-  border-top: none;
-  padding: 12px 18px;
+  border-top: 1.5px solid var(--cinza-borda);
+  padding: 11px 18px;
   display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
 }
 
 .det-label {
@@ -281,6 +251,7 @@ html, body {
 
 .score-dots { display: flex; gap: 3px; }
 
+
 .score-dot {
   width: 8px; height: 8px;
   background: #333; border: 1px solid #444;
@@ -293,73 +264,55 @@ html, body {
 
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.1;} }
 
-/* Área da imagem com padding branco */
+/* Imagem cresce para preencher o espaço igual ao da câmera na tela inicial */
 .img-area {
   position: relative;
   background: var(--branco);
   padding: 14px;
-  border-left: 1.5px solid var(--cinza-borda);
-  border-right: 1.5px solid var(--cinza-borda);
+  flex-shrink: 0;
   overflow: hidden;
 }
 
 #imagem-principal {
-  width: 100%; display: block;
-  aspect-ratio: 4/3; object-fit: cover;
+  width: 100%;
+  aspect-ratio: 4/3;
+  display: block;
+  object-fit: cover;
   transition: opacity 0.25s ease, transform 0.25s ease;
   box-shadow: 0 2px 16px rgba(0,0,0,0.08);
 }
 
 #imagem-principal.fade-out { opacity: 0; transform: scale(0.98); }
 
-/* Scanline sobre a imagem */
 .scan-line {
-  position: absolute;
-  left: 14px; right: 14px;
-  height: 1.5px;
+  position: absolute; left: 14px; right: 14px; height: 1.5px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
   animation: iscan 2.5s ease-in-out infinite;
   pointer-events: none; z-index: 1;
 }
 
-@keyframes iscan { 0%{top:14px;} 50%{top:calc(100% - 14px);} 100%{top:14px;} }
+@keyframes iscan { 0%{top:14px;} 50%{bottom:14px;top:auto;} 100%{top:14px;} }
 
-/* ─── OVERLAY DE FEEDBACK ───────────────────────
-   Cobre a imagem (inset: 14px = padding da img-area)
-   Dividido em duas zonas:
-     fov-top  — ícone + palavra (sempre)
-     fov-dica — dica da IA deslizando de baixo (só ao errar)
-─────────────────────────────────────────────── */
+/* Overlay de feedback */
 .fov {
   position: absolute;
-  inset: 14px;
-  display: flex;
-  flex-direction: column;
-  opacity: 0;
-  transition: opacity 0.22s, transform 0.22s;
-  transform: scale(0.97);
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 2;
+  top: 14px; left: 14px; right: 14px; bottom: 14px;
+  display: flex; flex-direction: column;
+  opacity: 0; transition: opacity 0.22s, transform 0.22s;
+  transform: scale(0.97); pointer-events: none; overflow: hidden; z-index: 2;
 }
 
 .fov.show  { opacity: 1; transform: scale(1); }
 .fov.correto .fov-top { background: rgba(46,204,113,0.15); }
 .fov.errado  .fov-top { background: rgba(231,76,60,0.13); }
 
-/* Zona superior */
 .fov-top {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
 }
 
 .fov-icone {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px; line-height: 1;
+  font-family: 'Bebas Neue', sans-serif; font-size: 60px; line-height: 1;
   animation: icone-pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
 }
 
@@ -379,104 +332,91 @@ html, body {
 .fov.correto .fov-word { color: var(--verde-escuro); }
 .fov.errado  .fov-word { color: var(--vermelho-esc); }
 
-/* Zona inferior — dica da IA */
 .fov-dica {
   background: rgba(15,15,15,0.84);
-  padding: 10px 14px;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  padding: 10px 14px; display: flex; align-items: flex-start; gap: 8px;
   transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
-  flex-shrink: 0;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0;
 }
 
 .fov-dica.show { transform: translateY(0); }
 
 .fov-dica-label {
-  font-size: 8px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--vermelho);
-  white-space: nowrap; margin-top: 1px; flex-shrink: 0;
+  font-size: 8px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--vermelho); white-space: nowrap; margin-top: 1px; flex-shrink: 0;
 }
 
 .fov-dica-txt {
   font-size: 11px; font-weight: 400;
-  color: rgba(255,255,255,0.88);
-  line-height: 1.5;
-  transition: color 0.3s;
+  color: rgba(255,255,255,0.88); line-height: 1.5; transition: color 0.3s;
 }
 
-.fov-dica-txt.loading {
-  color: rgba(255,255,255,0.35);
-  font-style: italic;
-}
+.fov-dica-txt.loading { color: rgba(255,255,255,0.35); font-style: italic; }
 
-/* ─── BOTÕES REAL / FAKE — sólidos ─── */
-.btn-row { display: flex; }
+/* Botões */
+.btn-row { display: flex; flex-shrink: 0; }
 
 .btn-rf {
-  flex: 1;
-  padding: 18px 0;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px; letter-spacing: 2px;
-  border: none; cursor: pointer;
-  transition: all 0.18s ease;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
+  flex: 1; padding: 18px 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px;
+  border: none; cursor: pointer; transition: all 0.18s ease;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 
-/* REAL — verde sólido */
-.btn-rf.real {
-  background: var(--verde);
-  color: #fff;
-  border-right: 1.5px solid rgba(0,0,0,0.1);
+.btn-rf.real { background: var(--verde); color: #fff; border-right: 2px solid rgba(0,0,0,0.1); }
+.btn-rf.fake { background: var(--vermelho); color: #fff; }
+
+.btn-rf.real:hover:not(:disabled) { background: var(--verde-escuro); box-shadow: 0 -4px 16px rgba(46,204,113,0.3); }
+.btn-rf.fake:hover:not(:disabled) { background: var(--vermelho-esc); box-shadow: 0 -4px 16px rgba(231,76,60,0.3); }
+.btn-rf:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* Barra preta no bottom da tela de jogo — espelho do header */
+.jogo-bottom-bar {
+  background: var(--preto);
+  padding: 10px 18px;
+  flex-shrink: 0;
 }
 
-/* FAKE — vermelho sólido */
-.btn-rf.fake {
-  background: var(--vermelho);
-  color: #fff;
+.jogo-bottom-bar .color-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--verde) 50%, var(--vermelho) 50%);
+  margin-top: 10px;
 }
 
-.btn-rf.real:hover:not(:disabled) {
-  background: var(--verde-escuro);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(46,204,113,0.35);
-}
-
-.btn-rf.fake:hover:not(:disabled) {
-  background: var(--vermelho-esc);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(231,76,60,0.35);
-}
-
-.btn-rf:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
-
-/* Rodapé do jogo */
 .jogo-footer {
-  background: var(--cinza-fundo);
-  border: 1.5px solid var(--cinza-borda);
-  border-top: none;
-  padding: 11px 18px;
-  display: flex; align-items: center;
+  background: var(--branco);
+  border-top: 1.5px solid var(--cinza-borda);
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;          /* ocupa o espaco branco restante */
+  min-height: 0;
+}
+
+/* Linha superior: resultado + botao continuar */
+.jogo-footer-topo {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  min-height: 46px;
 }
 
 .res-txt {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 1.5px;
+  line-height: 1;
 }
 
+.res-txt.correto { color: var(--verde-escuro); }
+.res-txt.errado  { color: var(--vermelho-esc); }
+
 .btn-cont {
-  background: var(--preto); color: #fff;
-  border: none; padding: 8px 14px;
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  cursor: pointer; display: none;
-  font-family: 'Inter', sans-serif;
-  transition: opacity 0.18s;
+  background: var(--preto); color: #fff; border: none;
+  padding: 12px 22px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 1.5px;
+  cursor: pointer; display: none; transition: opacity 0.18s;
   animation: btn-pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
 }
 
@@ -488,24 +428,58 @@ html, body {
 .btn-cont.vis   { display: block; }
 .btn-cont:hover { opacity: 0.75; }
 
+/* Dica da IA no rodape — aparece abaixo do resultado */
+.dica-rodape {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--cinza-borda);
+  padding-top: 10px;
+  animation: fade-in 0.35s ease both;
+}
+
+.dica-rodape.vis { display: flex; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dica-rodape-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--vermelho-esc);
+}
+
+.dica-rodape-txt {
+  font-size: 16px; font-weight: 400; font-style: italic;
+  color: #444; line-height: 1.6;
+}
+
+.dica-rodape-txt.loading {
+  color: #bbb;
+}
+
 /* =============================================
    TELA FINAL
    ============================================= */
 
 .final-hero {
+  flex: 1;                  /* mesmo flex:1 — preenche igual à câmera e imagem */
   background: var(--branco);
-  border-left: 1.5px solid var(--cinza-borda);
-  border-right: 1.5px solid var(--cinza-borda);
-  padding: 36px 24px 24px;
+  padding: 0 24px;
   text-align: center; position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
   border-bottom: 1.5px solid var(--cinza-borda);
+  min-height: 0;
 }
 
 .final-ghost {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 150px; line-height: 1; color: #f2f2f2;
-  position: absolute; top: -10px; left: 50%;
-  transform: translateX(-50%);
+  font-size: 160px; line-height: 1; color: #f2f2f2;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: none; user-select: none; letter-spacing: -4px;
   animation: ghost-float 4s ease-in-out infinite;
 }
@@ -522,27 +496,23 @@ html, body {
   to   { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-.final-den { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: #ccc; }
+.final-den { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: #ccc; }
 
 .final-label {
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
   color: #bbb; margin-top: 4px; position: relative; z-index: 1;
 }
 
 .barra {
-  display: flex;
-  border-left: 1.5px solid var(--cinza-borda);
-  border-right: 1.5px solid var(--cinza-borda);
+  display: flex; flex-shrink: 0;
+  border-top: 1.5px solid var(--cinza-borda);
   border-bottom: 1.5px solid var(--cinza-borda);
 }
 
 .b-item {
   flex: 1; padding: 11px 0;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px; letter-spacing: 1px;
-  border-right: 1.5px solid var(--cinza-borda);
-  text-align: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px;
+  border-right: 1.5px solid var(--cinza-borda); text-align: center;
 }
 
 .b-item:last-child { border-right: none; }
@@ -550,10 +520,8 @@ html, body {
 .b-item.er { color: var(--vermelho-esc); background: #fef6f5; }
 
 .final-footer {
-  background: var(--branco);
-  border: 1.5px solid var(--cinza-borda);
-  border-top: none;
-  padding: 18px 22px; text-align: center;
+  background: var(--branco); padding: 16px 22px;
+  text-align: center; flex-shrink: 0;
 }
 
 .ia-sep { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -562,8 +530,7 @@ html, body {
 
 .feedback-ia {
   font-size: 12px; font-style: italic; font-weight: 300;
-  color: #999; line-height: 1.75; min-height: 40px;
-  margin-bottom: 14px;
+  color: #999; line-height: 1.75; min-height: 40px; margin-bottom: 12px;
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -582,20 +549,3 @@ html, body {
 }
 
 .hint { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #ddd; }
-
-/* =============================================
-   RESPONSIVO
-   ============================================= */
-
-@media (max-height: 700px) {
-  .hero-real, .hero-fake { font-size: 54px; }
-  .ghost-q               { font-size: 100px; }
-  .final-score           { font-size: 76px; }
-  .img-area              { padding: 10px; }
-  .fov                   { inset: 10px; }
-  .scan-line             { left: 10px; right: 10px; }
-}
-
-@media (max-width: 420px) {
-  .btn-rf { font-size: 20px; padding: 14px 0; }
-}
