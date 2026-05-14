@@ -135,7 +135,7 @@ async function _iniciarCamera() {
 
   } catch (err) {
     console.error("[camera] Erro ao acessar camera:", err);
-    atualizarStatusCamera(false, "Camera indisponivel");
+    atualizarStatusCamera(false, "Câmera indisponivel");
     _ativarModoManual();
   }
 }
@@ -215,7 +215,7 @@ function _logicaEspera(rostoOlhando, temRosto) {
       esconderProgressoInicio();
     }
     atualizarStatusCamera(false,
-      temRosto ? "Olhe para a tela" : "Aproxime-se para comecar"
+      temRosto ? "Olhe para a tela" : "Aproxime-se para começar"
     );
   }
 }
@@ -318,7 +318,7 @@ function _ativarModoManual() {
     camHero.style.background = "#1a1a1a";
     const lbl = document.getElementById("cam-bottom-label");
     if (lbl) {
-      lbl.textContent = "Toque para comecar";
+      lbl.textContent = "Toque para começar";
       lbl.style.cursor = "pointer";
       lbl.addEventListener("click", () => {
         if (cbStart) cbStart();

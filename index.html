@@ -101,8 +101,21 @@
     </div>
 
     <div class="jogo-footer">
-      <span id="result" class="res-txt"></span>
-      <button id="btn-continuar" class="btn-cont">Continuar →</button>
+      <!-- Linha topo: resultado + botao -->
+      <div class="jogo-footer-topo">
+        <span id="result" class="res-txt"></span>
+        <button id="btn-continuar" class="btn-cont">CONTINUAR →</button>
+      </div>
+      <!-- Dica da IA no rodape (substitui o overlay quando erra) -->
+      <div class="dica-rodape" id="dica-rodape">
+        <span class="dica-rodape-label">Análise por IA</span>
+        <span class="dica-rodape-txt" id="dica-rodape-txt">Analisando imagem...</span>
+      </div>
+    </div>
+
+    <!-- Barra preta no bottom da tela de jogo -->
+    <div class="jogo-bottom-bar">
+      <div class="color-bar"></div>
     </div>
 
   </div>

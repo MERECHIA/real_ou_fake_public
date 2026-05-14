@@ -107,7 +107,7 @@ export function verificar(resposta) {
     analisarImagemErro(
       imagemObj.src,
       imagemObj.tipo,
-      imagemObj.dica || "Observe os detalhes de textura e iluminacao."
+      imagemObj.dica || "Observe os detalhes de textura e iluminação."
     );
   }
 
