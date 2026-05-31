@@ -1,5 +1,5 @@
 /**
- * game.js - logica do jogo
+ * game.js - logica do jogo sem camera
  */
 
 import { imagens } from "./data.js";
@@ -12,22 +12,15 @@ import {
   mostrarResultadoFinal
 } from "./ui.js";
 import { gerarFeedbackIA, analisarImagemErro } from "./ai.js";
-import {
-  iniciarCameraAuto,
-  marcarJogoIniciado,
-  aguardarReinicioAutomatico,
-  pausarDeteccao
-} from "./camera.js";
 
 const TOTAL_IMAGENS_POR_JOGO = 10;
-const DELAY_REATIVACAO       = 3000;
 
-let jogoImagens    = [];
-let imagemAtual    = 0;
-let score          = 0;
-let historico      = [];
-let jogoAtivo      = false;
-let respondendo    = false; // guard contra duplo clique
+let jogoImagens  = [];
+let imagemAtual  = 0;
+let score        = 0;
+let historico    = [];
+let jogoAtivo    = false;
+let respondendo  = false;
 
 // Helpers
 
@@ -72,17 +65,13 @@ export function comecarJogo() {
   if (btnCont) btnCont.classList.remove("vis");
   if (btnReal) btnReal.disabled = false;
   if (btnFake) btnFake.disabled = false;
-
-  marcarJogoIniciado();
 }
 
 export function verificar(resposta) {
-  // Guard duplo: jogo inativo ou ja respondendo esta rodada
   if (!jogoAtivo || respondendo) return;
   respondendo = true;
 
-  // Desabilita botoes IMEDIATAMENTE — antes de qualquer processamento
-  // Impede segundo clique enquanto a API responde
+  // Desabilita botoes imediatamente
   const btnReal = document.getElementById("btn-real");
   const btnFake = document.getElementById("btn-fake");
   const btnCont = document.getElementById("btn-continuar");
@@ -90,8 +79,7 @@ export function verificar(resposta) {
   if (btnFake) btnFake.disabled = true;
 
   const imagemObj = jogoImagens[imagemAtual];
-  const correto   = imagemObj.tipo;
-  const acertou   = resposta === correto;
+  const acertou   = resposta === imagemObj.tipo;
 
   historico.push(acertou);
   if (acertou) score++;
@@ -102,12 +90,11 @@ export function verificar(resposta) {
     imagemObj.tipo
   );
 
-  // Quando erra: IA analisa e atualiza dica no overlay
   if (!acertou) {
     analisarImagemErro(
       imagemObj.src,
       imagemObj.tipo,
-      imagemObj.dica || "Observe os detalhes de textura e iluminação."
+      imagemObj.dica || "Observe os detalhes de textura e iluminacao."
     );
   }
 
@@ -117,7 +104,7 @@ export function verificar(resposta) {
 
 export function continuar() {
   imagemAtual++;
-  respondendo = false; 
+  respondendo = false;
   limparFeedback();
 
   const btnCont = document.getElementById("btn-continuar");
@@ -137,12 +124,7 @@ export function continuar() {
 export function reiniciarJogo() {
   jogoAtivo   = false;
   respondendo = false;
-  pausarDeteccao();
   mostrarTela("tela-inicial");
-
-  setTimeout(() => {
-    iniciarCameraAuto(comecarJogo, reiniciarJogo);
-  }, DELAY_REATIVACAO);
 }
 
 // Privado
@@ -152,8 +134,4 @@ function _finalizarJogo() {
   mostrarTela("tela-final");
   mostrarResultadoFinal(score, TOTAL_IMAGENS_POR_JOGO, historico);
   gerarFeedbackIA(score, TOTAL_IMAGENS_POR_JOGO);
-
-  setTimeout(() => {
-    aguardarReinicioAutomatico(reiniciarJogo);
-  }, 6000);
 }

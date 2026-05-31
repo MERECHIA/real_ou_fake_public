@@ -1,7 +1,6 @@
 /* =============================================
-   REAL OU FAKE? — Design System Final
+   REAL OU FAKE? — Design Final sem câmera
    Bebas Neue + Inter
-   Verde #2ecc71 | Vermelho #e74c3c
    ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap');
@@ -17,7 +16,6 @@
   --cinza-fundo:  #fafafa;
   --branco:       #ffffff;
   --transition:   0.2s ease;
-
   --card-width:   420px;
   --card-height:  640px;
 }
@@ -95,6 +93,33 @@ html, body {
   color: #555;
 }
 
+/* Header direita — contador + reiniciar */
+.hdr-direita {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hdr-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+/* Botão reiniciar no header */
+.btn-reiniciar-hdr {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--vermelho);
+  border: 1px solid var(--vermelho);
+  padding: 5px 10px; cursor: pointer;
+  transition: all 0.18s; flex-shrink: 0;
+}
+
+.btn-reiniciar-hdr:hover { background: var(--vermelho); color: #fff; }
+
 .color-bar {
   height: 3px;
   background: linear-gradient(90deg, var(--verde) 50%, var(--vermelho) 50%);
@@ -105,67 +130,18 @@ html, body {
    TELA INICIAL
    ============================================= */
 
-.cam-hero {
-  position: relative;
-  flex: 1;                  /* ocupa o espaço restante após header e footer */
-  background: #111;
-  overflow: hidden;
-  min-height: 0;
-}
-
-#camera-display {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transform: scaleX(-1); display: block;
-}
-
-#camera-overlay {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  transform: scaleX(-1); pointer-events: none;
-}
-
-.cam-scanline {
-  position: absolute; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(46,204,113,0.5), transparent);
-  animation: cam-scan 3s ease-in-out infinite;
-  pointer-events: none; z-index: 2;
-}
-
-@keyframes cam-scan {
-  0%  { top: 0%;   opacity: 1; }
-  48% { top: 100%; opacity: 1; }
-  49% { opacity: 0; } 50% { top: 0%; opacity: 0; } 51% { opacity: 1; }
-  100%{ top: 100%; opacity: 1; }
-}
-
-.cam-top-bar {
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--verde);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.4s ease; z-index: 3;
-}
-
-.cam-top-bar.on { transform: scaleX(1); }
-
-.cam-bottom-label {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: rgba(0,0,0,0.65); padding: 5px 12px;
-  font-size: 9px; font-weight: 600;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-  text-align: center; z-index: 3; transition: color 0.3s;
-}
-
-.cam-bottom-label.on { color: var(--verde); }
-
-.inicial-body {
+.inicial-hero {
   background: var(--branco);
-  padding: 20px 28px 16px;
-  text-align: center; position: relative; overflow: hidden;
-  flex-shrink: 0;
-  border-top: 1.5px solid var(--cinza-borda);
+  padding: 36px 32px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
 }
 
 .ghost-q {
@@ -182,11 +158,14 @@ html, body {
   50%      { transform: translateX(-50%) translateY(-5px); }
 }
 
-.hero-titulo { position: relative; z-index: 1; margin-bottom: 8px; }
+.hero-titulo {
+  position: relative; z-index: 1;
+  margin-bottom: 16px;
+}
 
 .hero-real {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px; letter-spacing: 3px;
+  font-size: 72px; letter-spacing: 3px;
   color: var(--verde); line-height: 0.9; display: block;
   animation: glow-g 3s ease-in-out infinite;
 }
@@ -197,14 +176,14 @@ html, body {
 }
 
 .hero-ou {
-  font-size: 10px; font-weight: 400;
+  font-size: 11px; font-weight: 400;
   letter-spacing: 0.3em; text-transform: uppercase;
-  color: #ccc; display: block; margin: 6px 0;
+  color: #ccc; display: block; margin: 8px 0;
 }
 
 .hero-fake {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px; letter-spacing: 3px;
+  font-size: 72px; letter-spacing: 3px;
   color: var(--vermelho); line-height: 0.9; display: block;
   animation: glow-r 3s ease-in-out infinite;
 }
@@ -215,40 +194,35 @@ html, body {
 }
 
 .hero-sub {
-  font-size: 11px; font-weight: 400; color: #bbb; line-height: 1.6;
-  max-width: 240px; margin: 0 auto; position: relative; z-index: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  line-height: 1.65;
+  max-width: 260px;
+  margin: 0 auto 24px;
+  position: relative; z-index: 1;
 }
 
-.inicial-footer {
-  background: var(--cinza-fundo);
-  border-top: 1.5px solid var(--cinza-borda);
-  padding: 11px 18px;
-  display: flex; align-items: center; gap: 12px;
-  flex-shrink: 0;
+.btn-comecar {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  background: var(--preto); color: #fff;
+  border: none; padding: 16px 52px;
+  cursor: pointer; position: relative; z-index: 1;
+  transition: all 0.2s ease;
 }
 
-.det-label {
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: #ccc; white-space: nowrap; flex-shrink: 0;
-  transition: color 0.3s;
-}
-
-.det-label.on { color: var(--preto); }
-
-.prog-wrap { flex: 1; height: 2px; background: var(--cinza-borda); }
-
-.prog-fill {
-  height: 100%; background: var(--preto);
-  width: 0%; transition: width 2s linear;
+.btn-comecar:hover {
+  background: var(--verde);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46,204,113,0.35);
 }
 
 /* =============================================
    TELA JOGO
    ============================================= */
 
-.score-dots { display: flex; gap: 3px; }
-
+.score-dots { display: flex; gap: 3px; flex-wrap: wrap; justify-content: flex-end; max-width: 120px; }
 
 .score-dot {
   width: 8px; height: 8px;
@@ -256,13 +230,12 @@ html, body {
   transition: all 0.2s ease;
 }
 
-.score-dot.ok { background: var(--verde);    border-color: var(--verde); box-shadow: 0 0 5px rgba(46,204,113,0.4); }
+.score-dot.ok { background: var(--verde);    border-color: var(--verde); box-shadow: 0 0 4px rgba(46,204,113,0.4); }
 .score-dot.er { background: var(--vermelho); border-color: var(--vermelho); }
 .score-dot.at { background: transparent; border: 1.5px solid #fff; animation: blink 0.9s infinite; }
 
 @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.1;} }
 
-/* Imagem cresce para preencher o espaço igual ao da câmera na tela inicial */
 .img-area {
   position: relative;
   background: var(--branco);
@@ -272,29 +245,47 @@ html, body {
 }
 
 #imagem-principal {
-  width: 100%;
-  aspect-ratio: 4/3;
-  display: block;
-  object-fit: cover;
   transition: opacity 0.25s ease, transform 0.25s ease;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.img-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3; 
+  overflow: hidden;
+  display: block;
+}
+
+.img-inner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover; 
+  object-position: center center;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#feedback-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 #imagem-principal.fade-out { opacity: 0; transform: scale(0.98); }
 
 .scan-line {
-  position: absolute; left: 14px; right: 14px; height: 1.5px;
+  position: absolute; left: 0; right: 0; height: 1.5px;
   background: linear-gradient(90deg, transparent, rgba(0,0,0,0.06), transparent);
   animation: iscan 2.5s ease-in-out infinite;
   pointer-events: none; z-index: 1;
 }
 
-@keyframes iscan { 0%{top:14px;} 50%{bottom:14px;top:auto;} 100%{top:14px;} }
+@keyframes iscan { 0%{top:0;} 50%{top:calc(100% - 2px);} 100%{top:0;} }
 
-/* Overlay de feedback */
 .fov {
-  position: absolute;
-  top: 14px; left: 14px; right: 14px; bottom: 14px;
   display: flex; flex-direction: column;
   opacity: 0; transition: opacity 0.22s, transform 0.22s;
   transform: scale(0.97); pointer-events: none; overflow: hidden; z-index: 2;
@@ -351,7 +342,7 @@ html, body {
 
 .fov-dica-txt.loading { color: rgba(255,255,255,0.35); font-style: italic; }
 
-/* Botões */
+/* Botões REAL / FAKE */
 .btn-row { display: flex; flex-shrink: 0; }
 
 .btn-rf {
@@ -368,43 +359,21 @@ html, body {
 .btn-rf.fake:hover:not(:disabled) { background: var(--vermelho-esc); box-shadow: 0 -4px 16px rgba(231,76,60,0.3); }
 .btn-rf:disabled { opacity: 0.25; cursor: not-allowed; }
 
-/* Barra preta no bottom da tela de jogo — espelho do header */
-.jogo-bottom-bar {
-  background: var(--preto);
-  padding: 10px 18px;
-  flex-shrink: 0;
-}
-
-.jogo-bottom-bar .color-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--verde) 50%, var(--vermelho) 50%);
-  margin-top: 10px;
-}
-
 .jogo-footer {
   background: var(--branco);
   border-top: 1.5px solid var(--cinza-borda);
   padding: 14px 18px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;   /* impede overflow para a barra */
+  display: flex; flex-direction: column; gap: 8px;
+  flex: 1; min-height: 0; overflow: hidden;
 }
 
-/* Linha superior: resultado + botao continuar */
 .jogo-footer-topo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
 }
 
 .res-txt {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  letter-spacing: 1.5px;
-  line-height: 1;
+  font-size: 28px; letter-spacing: 1.5px; line-height: 1;
 }
 
 .res-txt.correto { color: var(--verde-escuro); }
@@ -413,8 +382,7 @@ html, body {
 .btn-cont {
   background: var(--preto); color: #fff; border: none;
   padding: 12px 22px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px; letter-spacing: 1.5px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1.5px;
   cursor: pointer; display: none; transition: opacity 0.18s;
   animation: btn-pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
 }
@@ -427,13 +395,9 @@ html, body {
 .btn-cont.vis   { display: block; }
 .btn-cont:hover { opacity: 0.75; }
 
-/* Dica da IA no rodape — aparece abaixo do resultado */
 .dica-rodape {
-  display: none;
-  flex-direction: column;
-  gap: 6px;
-  border-top: 1px solid var(--cinza-borda);
-  padding-top: 10px;
+  display: none; flex-direction: column; gap: 6px;
+  border-top: 1px solid var(--cinza-borda); padding-top: 10px;
   animation: fade-in 0.35s ease both;
 }
 
@@ -454,14 +418,24 @@ html, body {
   font-size: 12px; font-weight: 400; font-style: italic;
   color: #444; line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 3;     /* maximo 3 linhas */
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.dica-rodape-txt.loading {
-  color: #bbb;
-  -webkit-line-clamp: unset;
+.dica-rodape-txt.loading { color: #bbb; -webkit-line-clamp: unset; }
+
+/* Barra preta bottom */
+.jogo-bottom-bar {
+  background: var(--preto);
+  padding: 10px 18px;
+  flex-shrink: 0;
+}
+
+.jogo-bottom-bar .color-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--verde) 50%, var(--vermelho) 50%);
+  margin-top: 10px;
 }
 
 /* =============================================
@@ -469,13 +443,13 @@ html, body {
    ============================================= */
 
 .final-hero {
-  flex: 1;                  /* mesmo flex:1 — preenche igual à câmera e imagem */
   background: var(--branco);
+  border-bottom: 1.5px solid var(--cinza-borda);
   padding: 0 24px;
   text-align: center; position: relative; overflow: hidden;
+  flex: 1;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  border-bottom: 1.5px solid var(--cinza-borda);
   min-height: 0;
 }
 
@@ -511,11 +485,13 @@ html, body {
   display: flex; flex-shrink: 0;
   border-top: 1.5px solid var(--cinza-borda);
   border-bottom: 1.5px solid var(--cinza-borda);
+  flex-wrap: wrap;
 }
 
 .b-item {
-  flex: 1; padding: 11px 0;
-  font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px;
+  flex: 1; min-width: 10%;
+  padding: 10px 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 16px;
   border-right: 1.5px solid var(--cinza-borda); text-align: center;
 }
 
@@ -530,11 +506,15 @@ html, body {
 
 .ia-sep { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .ia-line { flex: 1; height: 1px; background: var(--cinza-borda); }
-.ia-txt { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #ccc; }
+.ia-txt {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--vermelho-esc);
+}
 
 .feedback-ia {
-  font-size: 12px; font-style: italic; font-weight: 300;
-  color: #999; line-height: 1.75; min-height: 40px; margin-bottom: 12px;
+  font-size: 15px; font-style: italic; font-weight: 500;
+  color: #222; line-height: 1.75; min-height: 40px; margin-bottom: 14px;
   display: flex; align-items: center; justify-content: center;
 }
 
@@ -552,4 +532,13 @@ html, body {
   30%          { transform: translateY(-4px); opacity: 1; }
 }
 
-.hint { font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: #ddd; }
+/* Botão JOGAR NOVAMENTE */
+.btn-reiniciar-final {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 2px;
+  background: var(--vermelho); color: #fff;
+  border: none; padding: 14px 0; width: 100%;
+  cursor: pointer; transition: all 0.2s ease;
+}
+
+.btn-reiniciar-final:hover { background: var(--vermelho-esc); transform: translateY(-1px); }
