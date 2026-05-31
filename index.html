@@ -1,58 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline';">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <title>REAL OU FAKE?</title>
+</head>
+<body>
 
-<!DOCTYPE html> 
-<html lang="pt-BR"> 
+  <video id="camera" autoplay muted playsinline style="display:none;"></video>
+  <canvas id="camera-canvas" style="display:none;"></canvas>
 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline'">
-    <link rel="stylesheet" href="style.css"> 
-    <title>REAL OU FAKE?</title> 
-</head> 
+  <!-- ===================== TELA INICIAL ===================== -->
+  <div id="tela-inicial" class="tela ativa">
 
-<body> 
-    <video id="camera" autoplay muted playsinline style="display:none;"></video>
-    
-    <div id ="tela-inicial" class="container"> 
-        
-        <h1>REAL OU FAKE?</h1> 
-        <h2 id="status-camera">Aproxime-se para começar</h2>
-        </button>
-    
+    <div class="hdr">
+      <div class="hdr-logo">
+        <span class="hdr-real">REAL</span>
+        <span class="hdr-sep">ou</span>
+        <span class="hdr-fake">FAKE</span>
+      </div>
+      <span class="hdr-tag" id="live-txt">Câmera</span>
     </div>
 
-    <div id ="tela-jogo" class="container escondido">
-        
-        <h1>REAL OU FAKE?</h1>
+    <div class="color-bar"></div>
 
-        <div id="imagem"> 
-            <img src=" " alt="img"> 
-        </div> 
-        
-        <div id="botoes"> 
-            <button id="real" onclick="verificar('real')">REAL</button> 
-            <button id="fake" onclick="verificar('fake')">FAKE</button> 
-        </div> 
-        <p id="result"></p>
+    <!-- CÂMERA CENTRALIZADA COMO HERO -->
+    <div class="cam-hero">
+      <video id="camera-display" autoplay muted playsinline></video>
+      <canvas id="camera-overlay"></canvas>
+      <div class="cam-scanline"></div>
+      <div class="cam-top-bar" id="cam-top-bar"></div>
+      <div class="cam-bottom-label" id="cam-bottom-label">Aguardando pessoa</div>
+    </div>
 
-        <div class="continuar-container">
-            <button id="btn-continuar" onclick="continuar()" style="display:none;">
-                CONTINUAR
-            </button> 
+    <div class="inicial-body">
+      <div class="ghost-q" aria-hidden="true">?</div>
+      <div class="hero-titulo">
+        <span class="hero-real">REAL</span>
+        <span class="hero-ou">ou</span>
+        <span class="hero-fake">FAKE?</span>
+      </div>
+      <p class="hero-sub">Você consegue distinguir uma foto real de uma imagem criada por inteligência artificial?</p>
+    </div>
+
+    <div class="inicial-footer">
+      <span class="det-label" id="status-camera-label">Aguardando</span>
+      <div class="prog-wrap">
+        <div class="prog-fill" id="progress-bar"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TELA JOGO ===================== -->
+  <div id="tela-jogo" class="tela escondida">
+
+    <div class="hdr">
+      <div class="hdr-logo">
+        <span class="hdr-real">REAL</span>
+        <span class="hdr-sep">ou</span>
+        <span class="hdr-fake">FAKE</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span id="img-contador" class="hdr-tag">Imagem 1 / 5</span>
+        <div id="score-track" class="score-dots"></div>
+      </div>
+    </div>
+
+    <div class="color-bar"></div>
+
+    <div class="img-area">
+      <img id="imagem-principal" src="" alt="Imagem para classificar">
+      <div class="scan-line"></div>
+
+      <!-- Overlay de feedback — cobre a imagem quando responde -->
+      <div id="feedback-overlay" class="fov">
+        <div class="fov-top">
+          <span class="fov-icone" id="fov-icone"></span>
+          <span class="fov-word"  id="fov-word"></span>
         </div>
-    
+        <!-- Zona inferior: dica da IA (só quando erra) -->
+        <div class="fov-dica" id="fov-dica">
+          <span class="fov-dica-label">IA</span>
+          <span class="fov-dica-txt" id="fov-dica-txt">Analisando imagem...</span>
+        </div>
+      </div>
     </div>
-    
-    <div id ="tela-final" class="container escondido tela-animada">
-        <h3 id="resultado-final"></h3>
-        <p id="feedback-ia"></p>
-        <button onclick="reiniciarJogo()" style="display:none;">
-            REINICIAR
-        </button>       
-    </div> 
 
-    <script src="js/libs/ml5.min.js" type="text/javascript"></script>
-    <script type="module" src="js/main.js"></script> 
+    <div class="btn-row">
+      <button id="btn-real" class="btn-rf real">✓ REAL</button>
+      <button id="btn-fake" class="btn-rf fake">✕ FAKE</button>
+    </div>
 
-</body> 
+    <div class="jogo-footer">
+      <!-- Linha topo: resultado + botao -->
+      <div class="jogo-footer-topo">
+        <span id="result" class="res-txt"></span>
+        <button id="btn-continuar" class="btn-cont">CONTINUAR →</button>
+      </div>
+      <div class="dica-rodape" id="dica-rodape">
+        <span class="dica-rodape-label">Análise por IA</span>
+        <span class="dica-rodape-txt" id="dica-rodape-txt">Analisando imagem...</span>
+      </div>
+    </div>
+
+    <!-- Barra preta no bottom da tela de jogo -->
+    <div class="jogo-bottom-bar">
+      <div class="color-bar"></div>
+    </div>
+
+  </div>
+
+  <!-- ===================== TELA FINAL ===================== -->
+  <div id="tela-final" class="tela escondida">
+
+    <div class="hdr">
+      <div class="hdr-logo">
+        <span class="hdr-real">REAL</span>
+        <span class="hdr-sep">ou</span>
+        <span class="hdr-fake">FAKE</span>
+      </div>
+      <span class="hdr-tag">Resultado</span>
+    </div>
+
+    <div class="color-bar"></div>
+
+    <div class="final-hero">
+      <div class="final-ghost" id="final-ghost" aria-hidden="true">0</div>
+      <div style="position:relative;z-index:1;">
+        <span class="final-score" id="resultado-final">0 <span class="final-den">/ 5</span></span>
+      </div>
+      <p class="final-label">respostas corretas</p>
+    </div>
+
+    <div id="resultado-barra" class="barra"></div>
+
+    <div class="final-footer">
+      <div class="ia-sep">
+        <div class="ia-line"></div>
+        <span class="ia-txt">Análise por IA</span>
+        <div class="ia-line"></div>
+      </div>
+      <div id="feedback-ia" class="feedback-ia">
+        <span class="typing-dots"><span></span><span></span><span></span></span>
+      </div>
+      <p class="hint">Aproxime-se para jogar novamente</p>
+    </div>
+
+  </div>
+
+  <script src="js/libs/ml5.min.js" type="text/javascript"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
 </html>

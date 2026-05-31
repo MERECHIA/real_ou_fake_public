@@ -1,11 +1,11 @@
-import {comecarJogo,verificar,continuar,reiniciarJogo} from "./game.js";
-import { iniciarCameraAuto} from "./camera.js";
-
-window.comecarJogo = comecarJogo;
-window.verificar = verificar;
-window.continuar = continuar;
-window.reiniciarJogo = reiniciarJogo;
+import { comecarJogo, verificar, continuar, reiniciarJogo } from "./game.js";
+import { iniciarCameraAuto } from "./camera.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    iniciarCameraAuto(comecarJogo, reiniciarJogo);
+  
+  document.getElementById("btn-real").addEventListener("click", () => verificar("real"));
+  document.getElementById("btn-fake").addEventListener("click", () => verificar("fake"));
+  document.getElementById("btn-continuar").addEventListener("click", continuar);
+
+  iniciarCameraAuto(comecarJogo, reiniciarJogo);
 });
