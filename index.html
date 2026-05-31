@@ -3,18 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' 'unsafe-inline';">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="stylesheet" href="style.css">
   <title>REAL OU FAKE?</title>
 </head>
 <body>
-
-  <video id="camera" autoplay muted playsinline style="display:none;"></video>
-  <canvas id="camera-canvas" style="display:none;"></canvas>
 
   <!-- ===================== TELA INICIAL ===================== -->
   <div id="tela-inicial" class="tela ativa">
@@ -25,21 +21,12 @@
         <span class="hdr-sep">ou</span>
         <span class="hdr-fake">FAKE</span>
       </div>
-      <span class="hdr-tag" id="live-txt">Câmera</span>
+      <span class="hdr-tag">Jogo</span>
     </div>
 
     <div class="color-bar"></div>
 
-    <!-- CÂMERA CENTRALIZADA COMO HERO -->
-    <div class="cam-hero">
-      <video id="camera-display" autoplay muted playsinline></video>
-      <canvas id="camera-overlay"></canvas>
-      <div class="cam-scanline"></div>
-      <div class="cam-top-bar" id="cam-top-bar"></div>
-      <div class="cam-bottom-label" id="cam-bottom-label">Aguardando pessoa</div>
-    </div>
-
-    <div class="inicial-body">
+    <div class="inicial-hero">
       <div class="ghost-q" aria-hidden="true">?</div>
       <div class="hero-titulo">
         <span class="hero-real">REAL</span>
@@ -47,13 +34,12 @@
         <span class="hero-fake">FAKE?</span>
       </div>
       <p class="hero-sub">Você consegue distinguir uma foto real de uma imagem criada por inteligência artificial?</p>
+      <button id="btn-comecar" class="btn-comecar">COMEÇAR →</button>
     </div>
 
-    <div class="inicial-footer">
-      <span class="det-label" id="status-camera-label">Aguardando</span>
-      <div class="prog-wrap">
-        <div class="prog-fill" id="progress-bar"></div>
-      </div>
+    <!-- Barra preta no bottom da tela inicial -->
+    <div class="jogo-bottom-bar">
+      <div class="color-bar"></div>
     </div>
 
   </div>
@@ -67,28 +53,31 @@
         <span class="hdr-sep">ou</span>
         <span class="hdr-fake">FAKE</span>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-        <span id="img-contador" class="hdr-tag">Imagem 1 / 5</span>
-        <div id="score-track" class="score-dots"></div>
+      <div class="hdr-direita">
+        <div class="hdr-info">
+          <span id="img-contador" class="hdr-tag">Imagem 1 / 10</span>
+          <div id="score-track" class="score-dots"></div>
+        </div>
+        <button id="btn-reiniciar-jogo" class="btn-reiniciar-hdr">↺ REINICIAR</button>
       </div>
     </div>
 
     <div class="color-bar"></div>
 
     <div class="img-area">
-      <img id="imagem-principal" src="" alt="Imagem para classificar">
-      <div class="scan-line"></div>
-
-      <!-- Overlay de feedback — cobre a imagem quando responde -->
-      <div id="feedback-overlay" class="fov">
-        <div class="fov-top">
-          <span class="fov-icone" id="fov-icone"></span>
-          <span class="fov-word"  id="fov-word"></span>
-        </div>
-        <!-- Zona inferior: dica da IA (só quando erra) -->
-        <div class="fov-dica" id="fov-dica">
-          <span class="fov-dica-label">IA</span>
-          <span class="fov-dica-txt" id="fov-dica-txt">Analisando imagem...</span>
+      <!-- img-inner isola o overlay dentro da imagem, sem vazar -->
+      <div class="img-inner">
+        <img id="imagem-principal" src="" alt="Imagem para classificar">
+        <div class="scan-line"></div>
+        <div id="feedback-overlay" class="fov">
+          <div class="fov-top">
+            <span class="fov-icone" id="fov-icone"></span>
+            <span class="fov-word"  id="fov-word"></span>
+          </div>
+          <div class="fov-dica" id="fov-dica">
+            <span class="fov-dica-label">IA</span>
+            <span class="fov-dica-txt" id="fov-dica-txt">Analisando imagem...</span>
+          </div>
         </div>
       </div>
     </div>
@@ -99,7 +88,6 @@
     </div>
 
     <div class="jogo-footer">
-      <!-- Linha topo: resultado + botao -->
       <div class="jogo-footer-topo">
         <span id="result" class="res-txt"></span>
         <button id="btn-continuar" class="btn-cont">CONTINUAR →</button>
@@ -110,7 +98,6 @@
       </div>
     </div>
 
-    <!-- Barra preta no bottom da tela de jogo -->
     <div class="jogo-bottom-bar">
       <div class="color-bar"></div>
     </div>
@@ -134,7 +121,7 @@
     <div class="final-hero">
       <div class="final-ghost" id="final-ghost" aria-hidden="true">0</div>
       <div style="position:relative;z-index:1;">
-        <span class="final-score" id="resultado-final">0 <span class="final-den">/ 5</span></span>
+        <span class="final-score" id="resultado-final">0 <span class="final-den">/ 10</span></span>
       </div>
       <p class="final-label">respostas corretas</p>
     </div>
@@ -150,12 +137,11 @@
       <div id="feedback-ia" class="feedback-ia">
         <span class="typing-dots"><span></span><span></span><span></span></span>
       </div>
-      <p class="hint">Aproxime-se para jogar novamente</p>
+      <button id="btn-reiniciar-final" class="btn-reiniciar-final">↺ JOGAR NOVAMENTE</button>
     </div>
 
   </div>
 
-  <script src="js/libs/ml5.min.js" type="text/javascript"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

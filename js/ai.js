@@ -13,7 +13,7 @@ const GEMINI_API_KEY = "Minha_Chave";
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
 
-// Timeout generoso — Gemini pode demorar na primeira chamada
+// Timeout generoso 
 const TIMEOUT_MS = 20000;
 
 // Guard: impede chamadas simultaneas
@@ -37,7 +37,6 @@ const CONTEXTO_IMAGENS = {
   "IAGirafa.png":   "girafa gerada por IA com padroes simetricos gerados artificialmente",
 };
 
-// Analisa e atualiza dica no overlay quando pessoa erra
 
 export async function analisarImagemErro(imagemSrc, tipoCorreto, dicaLocal) {
   if (analisandoAgora) {
@@ -139,7 +138,6 @@ async function _chamarGemini(body) {
   return texto;
 }
 
-// Retorna o fallback apos o timeout — sem rejeitar a Promise
 function _timeoutPromise(ms, fallback) {
   return new Promise(resolve => {
     setTimeout(() => {
