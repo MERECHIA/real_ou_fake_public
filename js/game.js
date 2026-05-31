@@ -19,7 +19,7 @@ import {
   pausarDeteccao
 } from "./camera.js";
 
-const TOTAL_IMAGENS_POR_JOGO = 5;
+const TOTAL_IMAGENS_POR_JOGO = 10;
 const DELAY_REATIVACAO       = 3000;
 
 let jogoImagens    = [];

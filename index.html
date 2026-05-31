@@ -13,7 +13,6 @@
 </head>
 <body>
 
-  <!-- Vídeo e canvas — ocultos, usados pelo camera.js para detecção -->
   <video id="camera" autoplay muted playsinline style="display:none;"></video>
   <canvas id="camera-canvas" style="display:none;"></canvas>
 
@@ -82,7 +81,6 @@
 
       <!-- Overlay de feedback — cobre a imagem quando responde -->
       <div id="feedback-overlay" class="fov">
-        <!-- Zona superior: ícone + palavra -->
         <div class="fov-top">
           <span class="fov-icone" id="fov-icone"></span>
           <span class="fov-word"  id="fov-word"></span>
@@ -106,7 +104,6 @@
         <span id="result" class="res-txt"></span>
         <button id="btn-continuar" class="btn-cont">CONTINUAR →</button>
       </div>
-      <!-- Dica da IA no rodape (substitui o overlay quando erra) -->
       <div class="dica-rodape" id="dica-rodape">
         <span class="dica-rodape-label">Análise por IA</span>
         <span class="dica-rodape-txt" id="dica-rodape-txt">Analisando imagem...</span>

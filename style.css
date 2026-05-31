@@ -18,7 +18,6 @@
   --branco:       #ffffff;
   --transition:   0.2s ease;
 
-  /* Altura fixa igual para todas as telas — baseada na tela inicial */
   --card-width:   420px;
   --card-height:  640px;
 }
@@ -38,7 +37,6 @@ html, body {
 
 /* =============================================
    SISTEMA DE TELAS
-   Todas com largura e altura iguais
    ============================================= */
 
 .tela {
@@ -386,12 +384,13 @@ html, body {
 .jogo-footer {
   background: var(--branco);
   border-top: 1.5px solid var(--cinza-borda);
-  padding: 18px 18px 14px;
+  padding: 14px 18px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;          /* ocupa o espaco branco restante */
+  gap: 8px;
+  flex: 1;
   min-height: 0;
+  overflow: hidden;   /* impede overflow para a barra */
 }
 
 /* Linha superior: resultado + botao continuar */
@@ -452,12 +451,17 @@ html, body {
 }
 
 .dica-rodape-txt {
-  font-size: 16px; font-weight: 400; font-style: italic;
-  color: #444; line-height: 1.6;
+  font-size: 12px; font-weight: 400; font-style: italic;
+  color: #444; line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;     /* maximo 3 linhas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .dica-rodape-txt.loading {
   color: #bbb;
+  -webkit-line-clamp: unset;
 }
 
 /* =============================================
