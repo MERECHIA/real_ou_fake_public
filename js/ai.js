@@ -39,6 +39,12 @@ const CONTEXTO_IMAGENS = {
   "Jacare.jpg":     "jacare real com pele de textura rugosa e reflexos naturais na agua",
   "Marreco.jpg":    "marreco real com detalhes do bico e penas de textura variada",
   "Tigre.jpg":      "tigre real com listras de padrao unico e pelo com variacao natural",
+  "Barracuda.jpg":  "barracuda real com corpo aerodinamico e reflexos naturais na pele molhada",
+  "Beijaflor.jpg":  "beijaflor real com penas de cores vibrantes e detalhes do voo naturais",
+  "Borboleta.jpg":  "borboleta real com asas de padrao unico e textura natural",
+  "Orangotango.jpg": "orangotango real com pelo de textura variada e expressao facial natural",
+  "Orca.jpg":       "orca real com pele de textura natural e reflexos corretos na agua",
+  "Tubaraobaleia.jpg": "tubarao baleia real com corpo macico e reflexos naturais na pele molhada",
   "IALontra.png":   "lontra gerada por IA com pelo artificialmente uniforme e simetrico",
   "IAUrso.png":     "urso gerado por IA com fundo artificial e iluminacao uniforme no pelo",
   "IACoelho.png":   "coelho gerado por IA com olhos sinteticos e proporcoes artificiais",
@@ -58,6 +64,12 @@ const CONTEXTO_IMAGENS = {
   "IAJacare.png":   "jacare gerado por IA com pele de textura repetitiva e reflexos artificiais na agua",
   "IAMarreco.png":  "marreco gerado por IA com detalhes do bico pouco definidos e penas sem textura natural",
   "IATigre.png":    "tigre gerado por IA com listras de padrao repetitivo e pelo sem variacao natural",
+  "IABarracuda.png": "barracuda gerada por IA com corpo sem textura natural e reflexos artificiais na pele molhada",
+  "IABeijaflor.png": "beijaflor gerado por IA com penas de cores planas e detalhes do voo artificiais",
+  "IABorboleta.png": "borboleta gerada por IA com asas no mesmo plano e padrao repetitivo",
+  "IAOrangotango.png": "orangotango gerado por IA com pelo de textura uniforme e expressao facial sem naturalidade",
+  "IAOrca.png":      "orca gerada por IA com pele sem textura natural e reflexos que nao se integram ao ambiente",
+  "IATubaraobaleia.png": "tubarao baleia gerado por IA com corpo sem textura natural e boca fora da proporcao realista"
 };
 
 

@@ -21,6 +21,12 @@ export const imagens = [
   {src: "assets/img/Jacare.jpg",      tipo: "real", dica: "Sombras em disposição real." },
   {src: "assets/img/Marreco.jpg",      tipo: "real", dica: "Coloração e detalhes do bico realistas." },
   {src: "assets/img/Tigre.jpg",      tipo: "real", dica: "Ambiente com profundidade real." },
+  {src: "assets/img/Barracuda.jpg",      tipo: "real", dica: "Animal com dimensões realistas." },
+  {src: "assets/img/Beijaflor.jpg",      tipo: "real", dica: "Cores vibrantes e detalhes do voo realistas." },
+  {src: "assets/img/Borboleta.jpg",      tipo: "real", dica: "Distância reais entre as asas." },
+  {src: "assets/img/Orangotango.jpg",      tipo: "real", dica: "Pelo com textura real." },
+  {src: "assets/img/Orca.jpg",      tipo: "real", dica: "Água com textura real." },
+  {src: "assets/img/Tubaraobaleia.jpg",      tipo: "real", dica: "Cores e reflexos naturais." },
 
   // Animais gerados por IA
   {src: "assets/img/IALontra.png",  tipo: "fake", dica: "Textura do pelo é artificialmente uniforme." },
@@ -42,5 +48,12 @@ export const imagens = [
   {src: "assets/img/IAJacare.png",   tipo: "fake", dica: "Animal enserido na água de forma artificial." },
   {src: "assets/img/IAMarreco.png",   tipo: "fake", dica: "Cores e reflexos artificiais." },
   {src: "assets/img/IATigre.png",   tipo: "fake", dica: "Cores e listras artificiais." },
+  {src: "assets/img/IABarracuda.png",   tipo: "fake", dica: "Animal e água com profundidas artificiais." },
+  {src: "assets/img/IABeijaflor.png",   tipo: "fake", dica: "Bico e flor estão com encaixe artificial." },
+  {src: "assets/img/IABorboleta.png",   tipo: "fake", dica: "As asas estão no mesmo plano." },
+  {src: "assets/img/IAOrangotango.png",   tipo: "fake", dica: "Pelagem artificial." },
+  {src: "assets/img/IAOrca.png",   tipo: "fake", dica: "Animal não integrado com o ambiente." },
+  {src: "assets/img/IATubaraobaleia.png",   tipo: "fake", dica: "Boca fora da proporção natural." },
+
 
 ];
