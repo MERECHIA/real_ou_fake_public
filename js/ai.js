@@ -8,7 +8,7 @@
 import { atualizarDicaIA } from "./ui.js";
 
 
-const GEMINI_API_KEY = "Minha_Chave"; 
+const GEMINI_API_KEY = "AIzaSyBGzrCmxr-JmtEcjyBL0-LA-u3oBV8lEBc"; 
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
 
