@@ -1,7 +1,6 @@
 /**
  * ai.js
  * - Analisa imagem via Google Gemini
- * - Timeout via Promise.race com delay
  * - Guard contra chamadas simultaneas
  * - Fallback offline usa dica do data.js
  */
@@ -28,6 +27,24 @@ const CONTEXTO_IMAGENS = {
   "Arraia.jpg":     "arraia real com textura de pele e reflexos subaquaticos naturais",
   "Coruja.jpg":     "coruja real com penas de variacao individual e olhos com reflexo natural",
   "Girafa.jpg":     "girafa real com padroes de pelo assimetricos e unicos",
+  "Leao.jpg":       "leao real com juba de textura variada e sombras naturais",
+  "Lince.jpg":      "lince real com olhos com reflexos naturais e pelo com variacao",
+  "Alce.jpg":       "alce real com reflexos naturais na pele e chifres assimetricos",
+  "Arara.jpg":      "arara real com penas de cores vibrantes e texturas variadas",
+  "Zebra.jpg":      "zebra real com listras de padrao unico e textura de pele natural",
+  "Cavalo.jpg":     "cavalo real com musculos definidos e pelo com variacao natural",
+  "Tubaraobranco.jpg": "tubarao branco real com reflexos fisicamente corretos na pele molhada",
+  "Cisne.jpg":      "cisne real com reflexos naturais na agua e penas de textura variada",
+  "Esquilo.jpg":    "esquilo real com pelo de textura irregular e cauda volumosa",
+  "Jacare.jpg":     "jacare real com pele de textura rugosa e reflexos naturais na agua",
+  "Marreco.jpg":    "marreco real com detalhes do bico e penas de textura variada",
+  "Tigre.jpg":      "tigre real com listras de padrao unico e pelo com variacao natural",
+  "Barracuda.jpg":  "barracuda real com corpo aerodinamico e reflexos naturais na pele molhada",
+  "Beijaflor.jpg":  "beijaflor real com penas de cores vibrantes e detalhes do voo naturais",
+  "Borboleta.jpg":  "borboleta real com asas de padrao unico e textura natural",
+  "Orangotango.jpg": "orangotango real com pelo de textura variada e expressao facial natural",
+  "Orca.jpg":       "orca real com pele de textura natural e reflexos corretos na agua",
+  "Tubaraobaleia.jpg": "tubarao baleia real com corpo macico e reflexos naturais na pele molhada",
   "IALontra.png":   "lontra gerada por IA com pelo artificialmente uniforme e simetrico",
   "IAUrso.png":     "urso gerado por IA com fundo artificial e iluminacao uniforme no pelo",
   "IACoelho.png":   "coelho gerado por IA com olhos sinteticos e proporcoes artificiais",
@@ -35,6 +52,24 @@ const CONTEXTO_IMAGENS = {
   "IAArraia.png":   "arraia gerada por IA com contorno exageradamente suave e simetrico",
   "IACoruja.png":   "coruja gerada por IA com penas de padrao repetitivo e olhos artificiais",
   "IAGirafa.png":   "girafa gerada por IA com padroes simetricos gerados artificialmente",
+  "IALeao.png":     "leao gerado por IA com juba de textura uniforme e iluminacao artificial",
+  "IALince.png":    "lince gerado por IA com olhos sem reflexos naturais e pelo uniforme",
+  "IAAlce.png":     "alce gerado por IA com reflexos artificiais e chifres simetricos",
+  "IAArara.png":    "arara gerada por IA com penas de cores planas e texturas artificiais",
+  "IAZebra.png":    "zebra gerada por IA com listras de padrao repetitivo e pele sem textura natural",
+  "IACavalo.png":   "cavalo gerado por IA com musculos pouco definidos e pelo uniforme",
+  "IATubaraobranco.png": "tubarao branco gerado por IA com reflexos artificiais e pele sem textura natural",
+  "IACisne.png":    "cisne gerado por IA com reflexos na agua que nao seguem a fisica real",
+  "IAEsquilo.png":  "esquilo gerado por IA com pelo de textura uniforme e cauda sem volume natural",
+  "IAJacare.png":   "jacare gerado por IA com pele de textura repetitiva e reflexos artificiais na agua",
+  "IAMarreco.png":  "marreco gerado por IA com detalhes do bico pouco definidos e penas sem textura natural",
+  "IATigre.png":    "tigre gerado por IA com listras de padrao repetitivo e pelo sem variacao natural",
+  "IABarracuda.png": "barracuda gerada por IA com corpo sem textura natural e reflexos artificiais na pele molhada",
+  "IABeijaflor.png": "beijaflor gerado por IA com penas de cores planas e detalhes do voo artificiais",
+  "IABorboleta.png": "borboleta gerada por IA com asas no mesmo plano e padrao repetitivo",
+  "IAOrangotango.png": "orangotango gerado por IA com pelo de textura uniforme e expressao facial sem naturalidade",
+  "IAOrca.png":      "orca gerada por IA com pele sem textura natural e reflexos que nao se integram ao ambiente",
+  "IATubaraobaleia.png": "tubarao baleia gerado por IA com corpo sem textura natural e boca fora da proporcao realista"
 };
 
 
